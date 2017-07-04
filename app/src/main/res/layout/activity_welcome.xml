@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/welcome_et_main"
+            android:text="@string/tv_welcome_main"
             android:textSize="30sp"/>
 
         <EditText

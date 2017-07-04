@@ -5,5 +5,12 @@
     <string name="btn_welcome_login">Login</string>
     <string name="btn_welcome_register">Register</string>
     <string name="btn_welcome_guest">Enter as guest</string>
-    <string name="welcome_et_main">Login</string>
+    <string name="tv_welcome_main">Login</string>
+    <string name="tv_home_main">Traffic Jam In</string>
+    <string name="tv_home_city">No Where</string>
+    <string name="btn_home_game">Play</string>
+    <string name="btn_home_scores">High Score</string>
+    <string name="btn_home_wiki">How to play</string>
+    <string name="btn_home_settings">Settings</string>
+    <string name="default_city_name">Brussels</string>
 </resources>
