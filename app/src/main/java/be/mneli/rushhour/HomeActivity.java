@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btnHomeGame;
@@ -41,18 +42,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.btn_home_game:
                 //TODO
+                relaxGringo();
                 break;
             case R.id.btn_home_scores:
                 //TODO
+                relaxGringo();
                 break;
             case R.id.btn_home_wiki:
-                //TODO
+                goToActivity(WikiActivity.class);
                 break;
             case R.id.btn_home_settings:
                 //TODO
+                relaxGringo();
                 break;
             default:
         }
+    }
+
+    private void relaxGringo() {
+        Toast.makeText(this, getString(R.string.relax_gringo), Toast.LENGTH_SHORT).show();
     }
 
     private void goToActivity(Class activity) {

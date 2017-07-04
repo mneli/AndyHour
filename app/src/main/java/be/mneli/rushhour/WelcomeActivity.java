@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,15 +41,21 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()) {
             case R.id.btn_welcome_login:
                 //TODO
+                relaxGringo();
                 break;
             case R.id.btn_welcome_register:
                 //TODO
+                relaxGringo();
                 break;
             case R.id.btn_welcome_guest:
                 goToActivity(HomeActivity.class);
                 break;
             default:
         }
+    }
+
+    private void relaxGringo() {
+        Toast.makeText(this, getString(R.string.relax_gringo), Toast.LENGTH_SHORT).show();
     }
 
     private void goToActivity(Class activity) {
