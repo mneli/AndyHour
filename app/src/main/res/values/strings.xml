@@ -14,4 +14,11 @@
     <string name="btn_home_settings">Settings</string>
     <string name="default_city_name">Brussels</string>
     <string name="relax_gringo">Relax Gringo ! Not yet implemented !</string>
+    <string name="tv_wiki_title">Rules</string>
+    <string name="tv_wiki_content_main">In Rush Hour, a sliding block logic game, you have to battle the gridlock as you slide the blocking vehicles out of the way for the red car to exit.</string>
+    <string name="tv_wiki_footer">Checkout for more at : </string>
+    <string name="tv_wiki_content_rule1">Move the orange car up to leave space for the turquoise car.</string>
+    <string name="tv_wiki_content_rule2">Move the turquoise car to left to leave space for the blue car.</string>
+    <string name="tv_wiki_content_rule3">Move the blue car to free the red car path to the exit.</string>
+    <string name="tv_wiki_content_rule4">Get the red car to the exit.</string>
 </resources>
