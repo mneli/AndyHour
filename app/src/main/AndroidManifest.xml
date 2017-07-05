@@ -21,11 +21,12 @@
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="portrait">
-
         </activity>
         <activity
             android:name=".WikiActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".PlayActivity">
         </activity>
     </application>
 

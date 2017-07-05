@@ -41,8 +41,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_home_game:
-                //TODO
-                relaxGringo();
+                goToActivity(PlayActivity.class);
                 break;
             case R.id.btn_home_scores:
                 //TODO
