@@ -2,10 +2,19 @@ package be.mneli.rushhour;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
 
+import be.mneli.rushhour.model.Board;
+import be.mneli.rushhour.model.Car;
+import be.mneli.rushhour.model.Position;
 import be.mneli.rushhour.model.RushHourGame;
 import be.mneli.rushhour.model.helper.ParseJson;
 
@@ -14,6 +23,8 @@ public class PlayActivity extends AppCompatActivity {
     private static final String MEDIUM_LEVELS = "medium";
     private static final String HARD_LEVELS = "hard";
     private HashMap<String, List<RushHourGame>> gameHashMap;
+    private GridView gridView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +37,46 @@ public class PlayActivity extends AppCompatActivity {
 
     private void initView() {
 
+        gridView = (GridView) findViewById(R.id.gridView_play_board);
+
+        RushHourGame game = getSingleLevel();
+        String[] board = getBoard(game.getBoard());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, board);
+        gridView.setAdapter(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+
+                Toast.makeText(getApplicationContext(),
+                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private String[] getBoard(Board board) {
+        String[] boardAsStringArray = new String[36];
+        int index = 0;
+        for (int row = 0; row < board.getHeight(); row++) {
+
+            for (int column = 0; column < board.getWidth(); column++) {
+                Car car = board.getCarAt(new Position(row, column));
+                boardAsStringArray[index] = "";
+                if (car != null)
+                    boardAsStringArray[index] += car.getId();
+                index++;
+            }
+
+        }
+        return boardAsStringArray;
+    }
+
+    private RushHourGame getSingleLevel() {
+        List<RushHourGame> easyLevels = gameHashMap.get(EASY_LEVELS);
+        return easyLevels.get(0);
     }
 
 }
