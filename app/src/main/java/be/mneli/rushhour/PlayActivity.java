@@ -17,7 +17,7 @@ import be.mneli.rushhour.model.Car;
 import be.mneli.rushhour.model.Direction;
 import be.mneli.rushhour.model.Position;
 import be.mneli.rushhour.model.RushHourGame;
-import be.mneli.rushhour.model.helper.ParseJson;
+import be.mneli.rushhour.model.helper.json.ParseJson;
 
 public class PlayActivity extends AppCompatActivity {
     private static final String EASY_LEVELS = "easy";
@@ -32,7 +32,7 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        gameHashMap = new ParseJson().parseLevels(this.getResources().openRawResource(R.raw.levels));
+        gameHashMap = ParseJson.parseLevels(this.getResources().openRawResource(R.raw.levels));
         initView();
     }
 
