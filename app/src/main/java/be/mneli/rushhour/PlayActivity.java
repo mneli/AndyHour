@@ -2,18 +2,19 @@ package be.mneli.rushhour;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
 
 import be.mneli.rushhour.model.Board;
 import be.mneli.rushhour.model.Car;
+import be.mneli.rushhour.model.Direction;
 import be.mneli.rushhour.model.Position;
 import be.mneli.rushhour.model.RushHourGame;
 import be.mneli.rushhour.model.helper.ParseJson;
@@ -39,7 +40,7 @@ public class PlayActivity extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.gridView_play_board);
 
-        RushHourGame game = getSingleLevel();
+        final RushHourGame game = getSingleLevel();
         String[] board = getBoard(game.getBoard());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -49,10 +50,12 @@ public class PlayActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-
-                Toast.makeText(getApplicationContext(),
-                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
-
+                Log.e("POSITION", String.valueOf(position));
+                Log.e("ID", String.valueOf(id));
+                Log.e("View", (String) ((TextView) v).getText());
+                Car selectedCar = game.getBoard().getCar((((TextView) v).getText()).charAt(0));
+                Log.e("Selected car", selectedCar.toString());
+                game.getBoard().canMove(selectedCar, Direction.LEFT);
             }
         });
     }
