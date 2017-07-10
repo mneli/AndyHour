@@ -4,10 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +16,12 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import be.mneli.rushhour.model.helper.web.HttpHandler;
 
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -27,6 +33,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private FusedLocationProviderClient mFusedLocationClient;
 
+    private double latitude = 50.850346;
+    private double longitude = 4.351721;
+    private String apiKey;
+    private String partialUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+    private String cityName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +46,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocation();
+        new GetCityName().execute();
         initView();
     }
 
@@ -50,9 +63,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            Log.e("LOCATION_GET_LOCATION", location.toString());
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
                         }
                     }
                 });
@@ -104,10 +117,68 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String getCityName() {
-        return getString(R.string.default_city_name);
+
+        return cityName == null ? getString(R.string.default_city_name) : cityName;
     }
 
     private void setCityName() {
         tvHomeCity.setText(getCityName());
+
+    }
+
+    private class GetCityName extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setCityName();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            apiKey = getResources().getString(R.string.google_api_key);
+            String url = partialUrl + latitude + "," + longitude + "&key=" + apiKey;
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    JSONArray results = jsonObj.getJSONArray("results");
+                    JSONObject addresses = results.getJSONObject(results.length() - 2);
+                    JSONArray addressComponents = addresses.getJSONArray("address_components");
+                    JSONObject address = addressComponents.getJSONObject(0);
+                    cityName = address.getString("short_name");
+
+                } catch (final JSONException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Json parsing error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                "Couldn't get json from server. Check LogCat for possible errors!",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+
+            }
+
+            return null;
+        }
     }
 }
