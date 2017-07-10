@@ -1,6 +1,7 @@
 package be.mneli.rushhour;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,64 +14,41 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import be.mneli.rushhour.model.async.AsyncGetLatLong;
 import be.mneli.rushhour.model.helper.web.HttpHandler;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AsyncGetLatLong.IAsyncGetLatLong {
     private Button btnHomeGame;
     private Button btnHomeScores;
     private Button btnHomeWiki;
     private Button btnHomeSettings;
     private TextView tvHomeCity;
 
-    private FusedLocationProviderClient mFusedLocationClient;
 
     private double latitude = 50.850346;
     private double longitude = 4.351721;
     private String apiKey;
     private String partialUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
     private String cityName;
+    private AsyncGetLatLong task;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        getLocation();
+        context = this;
+        StartTask();
+        //getLocation();
         new GetCityName().execute();
         initView();
     }
 
-    private void getLocation() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 6);
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mFusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                }
-                            }
-                        });
-            }
-
-        }
-
-    }
 
     private void initView() {
         btnHomeGame = (Button) findViewById(R.id.btn_home_game);
@@ -164,7 +142,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                     .show();
                         }
                     });
-
                 }
             } else {
                 runOnUiThread(new Runnable() {
@@ -182,4 +159,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
     }
+
+    private void StartTask() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 6);
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            task = new AsyncGetLatLong();
+            task.setCallback(this);
+            task.execute();
+        }
+
+    }
+
+    public void updateLocation(Location position) {
+        if (position == null) {
+            latitude = 50.850346;
+            longitude = 4.351721;
+        } else {
+            latitude = position.getLatitude();
+            longitude = position.getLongitude();
+        }
+    }
+
 }
